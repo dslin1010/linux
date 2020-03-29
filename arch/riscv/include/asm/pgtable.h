@@ -21,6 +21,16 @@
 
 #ifdef CONFIG_MMU
 
+#ifdef CONFIG_HIGHMEM
+#define VMALLOC_SIZE     (SZ_128M)
+/* Reserve 4MB from top of RAM to align with PGDIR_SIZE */
+#define VMALLOC_END      (0xffc00000UL)
+#define VMALLOC_START    (VMALLOC_END - VMALLOC_SIZE)
+
+#define BPF_JIT_REGION_SIZE    (VMALLOC_SIZE >> 2)
+#define BPF_JIT_REGION_START   (VMALLOC_END - BPF_JIT_REGION_SIZE)
+#define BPF_JIT_REGION_END (VMALLOC_END)
+#else
 #define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
 #define VMALLOC_END      (PAGE_OFFSET - 1)
 #define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
@@ -28,6 +38,7 @@
 #define BPF_JIT_REGION_SIZE	(SZ_128M)
 #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
 #define BPF_JIT_REGION_END	(VMALLOC_END)
+#endif /* CONFIG_HIGHMEM */
 
 /*
  * Roughly size the vmemmap space to be large enough to fit enough
@@ -59,6 +70,12 @@
 #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
 
 #endif
+
+#ifdef CONFIG_HIGHMEM
+/* Set LOWMEM_END alignment with PGDIR_SIZE */
+#define LOWMEM_END		(ALIGN_DOWN(PKMAP_BASE, SZ_4M))
+#define LOWMEM_SIZE		(LOWMEM_END - PAGE_OFFSET)
+#endif /* CONFIG_HIGHMEM */
 
 #ifdef CONFIG_64BIT
 #include <asm/pgtable-64.h>
@@ -455,7 +472,12 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
 #ifdef CONFIG_64BIT
 #define TASK_SIZE (PGDIR_SIZE * PTRS_PER_PGD / 2)
 #else
+#ifdef CONFIG_HIGHMEM
+#define TASK_SIZE PAGE_OFFSET
+#else
+#include<asm/fixmap.h>
 #define TASK_SIZE FIXADDR_START
+#endif
 #endif
 
 #else /* CONFIG_MMU */
