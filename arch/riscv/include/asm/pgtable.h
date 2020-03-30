@@ -200,6 +200,11 @@ static inline pgd_t *pgd_offset(const struct mm_struct *mm, unsigned long addr)
 /* Locate an entry in the kernel page global directory */
 #define pgd_offset_k(addr)      pgd_offset(&init_mm, (addr))
 
+#ifdef CONFIG_HIGHMEM
+/* Locate an entry in the second-level page table */
+#define pmd_off_k(addr)  pmd_offset((pud_t *)pgd_offset_k(addr), addr)
+#endif
+
 static inline struct page *pmd_page(pmd_t pmd)
 {
 	return pfn_to_page(pmd_val(pmd) >> _PAGE_PFN_SHIFT);

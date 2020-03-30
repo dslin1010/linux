@@ -16,6 +16,7 @@ obj-$(CONFIG_SMP) += tlbflush.o
 endif
 obj-$(CONFIG_HUGETLB_PAGE) += hugetlbpage.o
 obj-$(CONFIG_KASAN)   += kasan_init.o
+obj-$(CONFIG_HIGHMEM) += highmem.o
 
 ifdef CONFIG_KASAN
 KASAN_SANITIZE_kasan_init.o := n
