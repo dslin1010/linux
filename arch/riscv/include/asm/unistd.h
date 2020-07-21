@@ -8,7 +8,15 @@
  * be included multiple times.
  */
 
+
+#define __ARCH_WANT_SET_GET_RLIMIT
 #define __ARCH_WANT_SYS_CLONE
+#define __ARCH_WANT_STAT64
+#define __ARCH_WANT_SYS_NEWFSTATAT
+#define __ARCH_WANT_SYS_CLONE3
+#define __ARCH_WANT_TIME32_SYSCALLS
+
+
 
 #include <uapi/asm/unistd.h>
 

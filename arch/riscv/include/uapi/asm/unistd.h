@@ -21,6 +21,13 @@
 #define __ARCH_WANT_SYS_CLONE3
 #endif /* __LP64__ */
 
+#define __ARCH_WANT_SET_GET_RLIMIT
+#define __ARCH_WANT_SYS_CLONE
+#define __ARCH_WANT_STAT64
+#define __ARCH_WANT_SYS_NEWFSTATAT
+#define __ARCH_WANT_SYS_CLONE3
+#define __ARCH_WANT_TIME32_SYSCALLS
+
 #include <asm-generic/unistd.h>
 
 /*
